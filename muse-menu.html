@@ -38,7 +38,10 @@
     // ========= FETCH + PARSE (CSV or TSV) =========
     async function fetchCSV() {
       try {
-        const res = await fetch(SHEET_URL);
+        const res = await fetch(
+  	SHEET_URL + (SHEET_URL.includes("?") ? "&" : "?") + "t=" + Date.now(),
+  	{ cache: "no-store" }
+	);
         const text = await res.text();
         return parseCSV(text);
       } catch (e) {
