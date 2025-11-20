@@ -33,15 +33,13 @@
 
   <script>
     // ========= GOOGLE SHEET CSV/TSV URL =========
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6LQ4iy20_1t8HXk-cBRYgUNSREv4rM5hFuM2oPyoHqyNPVWiWxK2JHZn7APZRwURJwwaT04oGDTZt/pub?gid=0&single=true&output=csv";
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6LQ4iy20_1t8HXk-cBRYgUNSREv4rM5hFuM2oPyoHqyNPVWiWxK2JHZn7APZRwURJwwaT04oGDTZt/pub?output=csv";
 
     // ========= FETCH + PARSE (CSV or TSV) =========
     async function fetchCSV() {
       try {
-        const res = await fetch(
-  	SHEET_URL + (SHEET_URL.includes("?") ? "&" : "?") + "t=" + Date.now(),
-  	{ cache: "no-store" }
-	);
+        const url = SHEET_URL + (SHEET_URL.includes("?") ? "&" : "?") + "t=" + Date.now();
+        const res = await fetch(url, { cache: "no-store" });
         const text = await res.text();
         return parseCSV(text);
       } catch (e) {
@@ -65,10 +63,8 @@
       return lines.slice(1).map(row => {
         let cols;
         if (isTSV) {
-          // Simple tab split for TSV
           cols = row.split("\t");
         } else {
-          // Comma split that respects quoted CSV fields
           cols = row
             .split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
             .map(c => c.replace(/^"|"$/g, ""));
